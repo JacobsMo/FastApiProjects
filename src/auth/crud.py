@@ -4,7 +4,7 @@ from datetime import date
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 
-from .models import User, Item
+from .models import User
 from src.auth.config import get_data_database
 from .schemas import UserHashedPassword, ResponseGetUser
 
@@ -61,7 +61,7 @@ class UserCRUD:
         try:
             answer = self.session.query(User).filter(User.email == email).all()
         except Exception as ex:
-            raise Exception(f'''Don\'t valiable query for {__class__}
+            raise Exception(f'''Don\'t valid query for {__class__}
                             ; Error: {ex}''')
 
         try:

@@ -1,12 +1,17 @@
 import logging
 
-from fastapi import APIRouter
+from fastapi import APIRouter, Request, Form
+from fastapi.templating import Jinja2Templates
+from fastapi.responses import HTMLResponse
 
 from .auth import registration_user, authentication_user
 from .schemas import User, AuthUser, ResponseForAuth, ResponseForReg
 
 
 logger = logging.getLogger(name=__name__)
+
+
+templates = Jinja2Templates(directory="src/auth/templates")
 
 
 auth_router = APIRouter(
@@ -30,8 +35,13 @@ async def registration(user: User):
     return {"status": "success", "addable_user": user_json}
 
 
-@auth_router.post("/authentication", response_model=ResponseForAuth)
-async def authentication(user: AuthUser):
+@auth_router.get("/authentication", response_class=HTMLResponse)
+async def authentication(request: Request):
+    return templates.TemplateResponse("login.html", {"request": request})
+
+
+@auth_router.post("/authentication/postdata", response_model=ResponseForAuth)
+async def authentication_post():
     if not authentication_user(email=user.email, password=user.password):
         return {
             "status": "not success",
